@@ -1,44 +1,126 @@
 import React from 'react';
 import { useEffect, useState } from 'react';
 import AddValue from '../addValue/AddValue';
-import { useLoaderData } from 'react-router-dom';
+import { useLoaderData, useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
+import Form from '../Form';
+import useCategories from '../useCategories';
 
 const HomePage = () => {
+  const categories = useCategories();
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(true)
   const [userData, setUserData] = useState([])
-  const [selectors, setSelector] = useState([])
-  const [agree, setAgree] = useState(false);
+ 
+  const [isValid, setIsValid] = useState(false);
   const data = useLoaderData({})
+  const navigate = useNavigate()
 
   // agree to term section
 
   const canBeSubmitted = () => {
-    const isValid = agree
+    const btnSubmit = document.getElementById("submitButton");
     if (isValid) {
-      document.getElementById("submitButton").removeAttribute("disabled");
+      btnSubmit.removeAttribute("disabled");
     } else {
-      document.getElementById("submitButton").setAttribute("disabled", true);
+      btnSubmit.setAttribute("disabled", true);
     }
-
   }
   useEffect(() => canBeSubmitted());
 
   // Selector get mthhod
   useEffect(() => {
-
-    fetch('https://test-project-emhossain.vercel.app/data')
+    fetch('https://test-project-emhossain.vercel.app/userData')
       .then(res => res.json())
-      .then(data => setSelector(data))
-
-  }, [])
+      .then(data => {
+        setIsLoading(false);
+        setUserData(data);
+      })
+      .catch(error => {
+        console.error("Error fetching data:", error);
+        setIsLoading(false);
+      });
+  }, [setIsLoading, setUserData]);
 
 
 // This handler use for save and edit data conditionaly.
+  // const handleSubmit = (event) => {
+  //   event.preventDefault();
+   
+  //   const form = event.target;
+  //   const name = form.userName.value;
+  //   const value = form.selectValue.value;
+
+  //   const getValue = {
+  //     name, value
+  //   }
+
+
+  //   if (isEditing) {
+
+  //     fetch(`https://test-project-emhossain.vercel.app/updateData/${data?._id}`,
+  //       {
+  //         method: "PUT",
+  //         headers: {
+  //           "content-type": "application/json",
+  //         },
+  //         body: JSON.stringify(getValue),
+
+  //       }
+  //     )
+  //       .then((res) => res.json())
+  //       .then((data) => {
+  //         if (data.modifiedCount > 0) {
+            
+  //           toast('Your Data Successfully Update ')
+           
+            
+  //            setIsEditing(false)
+  //            navigate('/')
+  //           form.reset()
+            
+  //         }
+  //         setIsLoading(false)
+          
+         
+  //       });
+
+
+  //   } else {
+  //     setIsLoading(true)
+
+  //     fetch("https://test-project-emhossain.vercel.app/data", {
+  //       method: "POST",
+  //       headers: {
+  //         "content-type": "application/json",
+  //       },
+  //       body: JSON.stringify(getValue),
+  //     })
+  //       .then(res => res.json())
+  //       .then(result => {
+
+
+  //         if (result.acknowledged) {
+           
+  //          toast("You Successfully Save Data")
+  //         //  alert("You Successfully Save Data")
+  //         setIsLoading(false)
+  //           form.reset()
+  //           navigate('/')
+  //           const newData = [...userData, getValue];
+  //           setUserData(newData)
+          
+            
+  //         }
+          
+         
+  //       })
+
+  //   }
+  // };
+
   const handleSubmit = (event) => {
     event.preventDefault();
-   
     const form = event.target;
     const name = form.userName.value;
     const value = form.selectValue.value;
@@ -47,69 +129,71 @@ const HomePage = () => {
       name, value
     }
 
-
     if (isEditing) {
-
-      fetch(`https://test-project-emhossain.vercel.app/updateData/${data?._id}`,
-        {
-          method: "PUT",
-          headers: {
-            "content-type": "application/json",
-          },
-          body: JSON.stringify(getValue),
-
-        }
-      )
-        .then((res) => res.json())
-        .then((data) => {
-          if (data.modifiedCount > 0) {
-            
-            toast('Your Data Successfully Update ')
-            // alert('Your Data Successfully Update ')
-            
-             setIsEditing(false)
-            form.reset()
-            
-          }
-          setIsLoading(false)
-          
-         
-        });
-
-
+      handleUpdateData(getValue, form)
     } else {
-
-      fetch("https://test-project-emhossain.vercel.app/data", {
-        method: "POST",
-        headers: {
-          "content-type": "application/json",
-        },
-        body: JSON.stringify(getValue),
-      })
-        .then(res => res.json())
-        .then(result => {
-
-
-          if (result.acknowledged) {
-           
-           toast("You Successfully Save Data")
-          //  alert("You Successfully Save Data")
-            form.reset()
-            setIsLoading(false)
-
-          }
-          
-         
-        })
-
+      handleAddNewData(getValue, form)
     }
   };
 
-  // if (isLoading) {
-  //   <div className="flex items-center justify-center my-10">
-  //               <h1 className="text-xl uppercase">Loading.....</h1>
-  //           </div>
-  // }
+  const handleAddNewData = (formData, form) => {
+    setIsLoading(true)
+    fetch("https://test-project-emhossain.vercel.app/data", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    })
+      .then(res => res.json())
+      .then(result => {
+        if (result.acknowledged) {
+          toast("You Successfully Save Data")
+          setIsLoading(false)
+          form.reset();
+          const newData = [...userData, formData];
+          setUserData(newData)
+        }
+      })
+  }
+
+  // Update data info
+  const handleUpdateData = (formData, form) => {
+    setIsLoading(true);
+    fetch(`https://test-project-emhossain.vercel.app/updateData/${ data._id }`, {
+      method: "PUT",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    })
+      .then((res) => res.json())
+      .then((updateResult) => {
+        if (updateResult.modifiedCount > 0) {
+          toast('Your Data Successfully Updated');
+          setIsEditing(false);
+
+          // Update the userData state with the updated data immutably
+          const updatedUserData = userData.map(item => {
+            if (item._id === data._id) {
+              return { ...item, ...formData };
+            }
+            return item;
+          });
+
+          setIsLoading(false);
+          form.reset();
+          setUserData(updatedUserData); // Set state after performing all other operations
+          navigateAfterUpdate(); // Navigate using a separate function
+        }
+      });
+  };
+
+  // Function to navigate after updating
+  const navigateAfterUpdate = () => {
+    navigate('/');
+  };
+ 
 
   return (
     <section className=' pt-10 bg-slate-100'>
@@ -118,7 +202,7 @@ const HomePage = () => {
      <div className="fixed w-[40%] top-0 z-50 pt-5 left-[30%] ">
         <div className='bg-gradient-to-r from-[#404f5f] to-[#99a2a9] py-3 px-4 rounded-md' >
           <p className='text-center ml-1'>Please enter your name and pick the Sectors  you are currently involved in.</p>
-          <form className='mt-6 lg:ml-20' onSubmit={handleSubmit}>
+          {/* <form className='mt-6 lg:ml-20' onSubmit={handleSubmit}>
             <label className='text-xl' htmlFor="Name">Name: </label>
             <input
              type='text'
@@ -150,7 +234,16 @@ const HomePage = () => {
              type='submit'
               id="submitButton"
             >save</button>
-          </form>
+          </form> */}
+
+          <Form
+          handleSubmit={ handleSubmit }
+          data={ data }
+          categories={ categories }
+          setIsValid={ setIsValid }
+          >
+
+          </Form>
       <hr className=' mt-3'/>
         </div>
 

@@ -1,23 +1,10 @@
-import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 
 
 
-const AddValue = ({ userData, setUserData, setIsEditing, isLoading,setIsLoading }) => {
+const AddValue = ({ userData, setIsEditing, isLoading }) => {
 
-
-    useEffect(() => {
-
-        fetch('https://test-project-emhossain.vercel.app/userData')
-            .then(res => res.json())
-            .then(data => {
-                setUserData(data)
-                setIsLoading(false)
-            })
-
-
-    }, [setUserData])
 
     if (isLoading) {
         return <div className="flex items-center justify-center my-10">
