@@ -68,3 +68,10 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+
+*****About this  project****
+1) I used React and tailwind for build this project.
+2) Any body can add name and select any value then if they click button. This will be save is dataBase. Again this data get in the root page.
+3) Anybody can edit his/her data by click on edit button and edit by his/her require . Then if click on save button this data will be edit save a dataBase.
+4) Here is the live link: https://playful-semifreddo-5cc21e.netlify.app/

@@ -43,81 +43,8 @@ const HomePage = () => {
   }, [setIsLoading, setUserData]);
 
 
-// This handler use for save and edit data conditionaly.
-  // const handleSubmit = (event) => {
-  //   event.preventDefault();
-   
-  //   const form = event.target;
-  //   const name = form.userName.value;
-  //   const value = form.selectValue.value;
 
-  //   const getValue = {
-  //     name, value
-  //   }
-
-
-  //   if (isEditing) {
-
-  //     fetch(`https://test-project-emhossain.vercel.app/updateData/${data?._id}`,
-  //       {
-  //         method: "PUT",
-  //         headers: {
-  //           "content-type": "application/json",
-  //         },
-  //         body: JSON.stringify(getValue),
-
-  //       }
-  //     )
-  //       .then((res) => res.json())
-  //       .then((data) => {
-  //         if (data.modifiedCount > 0) {
-            
-  //           toast('Your Data Successfully Update ')
-           
-            
-  //            setIsEditing(false)
-  //            navigate('/')
-  //           form.reset()
-            
-  //         }
-  //         setIsLoading(false)
-          
-         
-  //       });
-
-
-  //   } else {
-  //     setIsLoading(true)
-
-  //     fetch("https://test-project-emhossain.vercel.app/data", {
-  //       method: "POST",
-  //       headers: {
-  //         "content-type": "application/json",
-  //       },
-  //       body: JSON.stringify(getValue),
-  //     })
-  //       .then(res => res.json())
-  //       .then(result => {
-
-
-  //         if (result.acknowledged) {
-           
-  //          toast("You Successfully Save Data")
-  //         //  alert("You Successfully Save Data")
-  //         setIsLoading(false)
-  //           form.reset()
-  //           navigate('/')
-  //           const newData = [...userData, getValue];
-  //           setUserData(newData)
-          
-            
-  //         }
-          
-         
-  //       })
-
-  //   }
-  // };
+ 
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -199,9 +126,9 @@ const HomePage = () => {
     <section className=' pt-10 bg-slate-100'>
       
          <div className=''>
-     <div className="fixed w-[40%] top-0 z-50 pt-5 left-[30%] ">
+     <div className="fixed top-0 z-50 lg:w-[40%] lg:ml-96 ">
         <div className='bg-gradient-to-r from-[#404f5f] to-[#99a2a9] py-3 px-4 rounded-md' >
-          <p className='text-center ml-1'>Please enter your name and pick the Sectors  you are currently involved in.</p>
+          <p className='text-center'>Please enter your name and pick the Sectors  you are currently involved in.</p>
           {/* <form className='mt-6 lg:ml-20' onSubmit={handleSubmit}>
             <label className='text-xl' htmlFor="Name">Name: </label>
             <input
